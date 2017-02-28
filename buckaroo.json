@@ -1,0 +1,7 @@
+{
+  "name": "snappy",
+  "dependencies": {
+    "gflags": "2.2.0",
+    "googletest": "1.8.0"
+  }
+}
