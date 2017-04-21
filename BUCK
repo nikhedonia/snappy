@@ -1,8 +1,8 @@
 include_defs('//BUCKAROO_DEPS')
 
 genrule(
-  name = 'autogen-configure', 
-  out = 'out', 
+  name = 'autogen-configure',
+  out = 'out',
   srcs = glob([
     'autogen.sh',
     'configure.ac',
@@ -15,26 +15,25 @@ genrule(
     'm4/*',
     '*.in',
   ]),
-  cmd = 'cp -r $SRCDIR $OUT && cd $OUT && ./autogen.sh && ./configure',
+  cmd = 'cp -r $SRCDIR $OUT && cd $OUT && chmod +x ./autogen.sh && ./autogen.sh && chmod +x ./configure && ./configure',
 )
 
 genrule(
-  name = 'config.h', 
+  name = 'config.h',
   out = 'config.h',
   cmd = 'cp $(location :autogen-configure)/config.h $OUT',
 )
 
 genrule(
-  name = 'snappy-stubs-public.h', 
+  name = 'snappy-stubs-public.h',
   out = 'snappy-stubs-public.h',
   cmd = 'cp $(location :autogen-configure)/snappy-stubs-public.h $OUT',
 )
 
 cxx_library(
-  name = 'snappy', 
+  name = 'snappy',
   header_namespace = '',
-  exported_headers = [
-    'snappy.h',
+  exported_headers = glob(['*.h']) + [
     ':snappy-stubs-public.h',
   ],
   headers = [
@@ -44,6 +43,7 @@ cxx_library(
     ':config.h',
   ],
   srcs = [
+    'snappy-c.cc',
     'snappy.cc',
     'snappy-stubs-internal.cc',
     'snappy-sinksource.cc',
@@ -55,7 +55,7 @@ cxx_library(
 )
 
 cxx_test(
-  name = 'snappy-test', 
+  name = 'snappy-test',
   headers = [
     'snappy-test.h',
     'snappy-stubs-internal.h',
